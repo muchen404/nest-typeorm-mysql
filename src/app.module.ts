@@ -1,8 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import * as Joi from 'joi';
+import { ConfigEnum } from './enum/config.enum';
+import { User } from './user/user.entity';
+import { Profile } from './user/profile.entity';
+import { Logs } from './logs/logs.entity';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 
@@ -18,6 +23,22 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
           .default('development'),
         DB_TYPE: Joi.string()
       })
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        ({
+          type: 'mysql',
+          port: 22900,
+          host: '47.111.240.180',
+          username: 'root',
+          password: 'SunnyData247824',
+          database: 'testdb',
+          synchronize: true,
+          entities: [User, Logs, Profile],
+          logging: ['error']
+        } as TypeOrmModuleOptions)
     }),
     UserModule
   ],
