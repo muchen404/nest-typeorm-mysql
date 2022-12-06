@@ -36,7 +36,7 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
           password: 'SunnyData247824',
           database: 'testdb',
           synchronize: true,
-          entities: [User, Logs, Profile],
+          entities: [User, Profile, Logs],
           logging: ['error']
         } as TypeOrmModuleOptions)
     }),
