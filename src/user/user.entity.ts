@@ -1,6 +1,9 @@
+import { Roles } from 'src/roles/roles.entity';
 import {
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn
@@ -24,4 +27,7 @@ export class User {
 
   @OneToMany(() => Logs, (logs) => logs.user)
   logs: Logs[];
+
+  @ManyToMany(() => Roles, (roles) => roles.users)
+  roles: Roles[];
 }

@@ -8,6 +8,8 @@ import { ConfigEnum } from './enum/config.enum';
 import { User } from './user/user.entity';
 import { Profile } from './user/profile.entity';
 import { Logs } from './logs/logs.entity';
+import { Roles } from './roles/roles.entity';
+import { LogsService } from './logs/logs.service';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 
@@ -36,13 +38,13 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
           password: configService.get(ConfigEnum.DB_PASSWORD),
           database: configService.get(ConfigEnum.DB_DATABASE),
           synchronize: configService.get(ConfigEnum.DB_SYNC),
-          entities: [User, Profile, Logs],
-          logging: ['error']
+          entities: [User, Profile, Logs, Roles],
+          logging: process.env.NODE_ENV === 'development'
         } as TypeOrmModuleOptions)
     }),
     UserModule
   ],
   controllers: [],
-  providers: []
+  providers: [LogsService]
 })
 export class AppModule {}
