@@ -29,13 +29,13 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
         ({
-          type: 'mysql',
-          port: 22900,
-          host: '47.111.240.180',
-          username: 'root',
-          password: 'SunnyData247824',
-          database: 'testdb',
-          synchronize: true,
+          type: configService.get(ConfigEnum.DB_TYPE),
+          port: configService.get(ConfigEnum.DB_PORT),
+          host: configService.get(ConfigEnum.DB_HOST),
+          username: configService.get(ConfigEnum.DB_USERNAME),
+          password: configService.get(ConfigEnum.DB_PASSWORD),
+          database: configService.get(ConfigEnum.DB_DATABASE),
+          synchronize: configService.get(ConfigEnum.DB_SYNC),
           entities: [User, Profile, Logs],
           logging: ['error']
         } as TypeOrmModuleOptions)
