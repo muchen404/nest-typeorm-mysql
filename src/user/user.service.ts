@@ -104,8 +104,6 @@ export class UserService {
         .groupBy('logs.result')
         .orderBy('count', 'DESC')
         .addOrderBy('result', 'DESC')
-        .offset(2)
-        .limit(3)
         .getRawMany();
       return response(true, result);
     } catch (error) {
