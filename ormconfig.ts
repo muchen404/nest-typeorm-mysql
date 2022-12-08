@@ -1,6 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
+import * as path from 'path';
 import { ConfigEnum } from 'src/enum/config.enum';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
@@ -11,9 +12,9 @@ function getEnv(env: string): Record<string, unknown> {
 }
 
 const entitiesDir =
-  process.env.NODE_ENV === 'production'
-    ? ['src/**/*.entity{.js,.ts}']
-    : ['src/**/*.entity.ts'];
+  process.env.NODE_ENV === 'text'
+    ? ['src/**/*.entity.ts']
+    : [path.join(__dirname, '**', '*.entity.{ts,js}')];
 
 function buildConnectionOptions() {
   const detaultConfig = getEnv('.env');

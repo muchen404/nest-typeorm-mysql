@@ -3,6 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
+  Logger,
+  LoggerService,
   Param,
   Post,
   Put
@@ -16,8 +19,11 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(
     private configService: ConfigService,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private readonly logger: Logger
+  ) {
+    this.logger.warn('UserController Init', 'UserController');
+  }
 
   @Get('test')
   test() {
@@ -30,6 +36,7 @@ export class UserController {
 
   @Get()
   getUsers() {
+    this.logger.log('你好');
     return this.userService.find();
   }
 
