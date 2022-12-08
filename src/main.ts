@@ -1,8 +1,10 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as winston from 'winston';
 import { utilities, WinstonModule } from 'nest-winston';
 import 'winston-daily-rotate-file';
+import { AllExceptionFilter } from './filters/all-exception.filter';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const PORT = 5789;
@@ -45,11 +47,15 @@ async function bootstrap() {
     ]
   });
 
-  const app = await NestFactory.create(AppModule, {
-    logger: WinstonModule.createLogger({
-      instance
-    })
+  const logger = WinstonModule.createLogger({
+    instance
   });
+  const app = await NestFactory.create(AppModule, {
+    logger
+  });
+  const httpAdapter = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new AllExceptionFilter(Logger, httpAdapter));
+
   await app.listen(PORT);
 }
 bootstrap();
