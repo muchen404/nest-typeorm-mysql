@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 import * as Joi from 'joi';
 import { connectionParams } from 'ormconfig';
+import { LogsModule } from './logs/logs.module';
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
 
@@ -23,7 +24,8 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`;
       })
     }),
     TypeOrmModule.forRoot(connectionParams),
-    UserModule
+    UserModule,
+    LogsModule
   ],
   controllers: [],
   providers: [Logger],
