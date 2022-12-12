@@ -1,3 +1,4 @@
+import { BusinessException } from '@/filters/business.exception.filter';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Logs } from 'src/logs/logs.entity';
@@ -20,34 +21,23 @@ export class UserService {
   ) {}
 
   async find() {
-    try {
-      const result = await this.userRepository.find();
-      return response(true, result);
-    } catch (error) {
-      return response(false, error);
-    }
+    return this.userRepository.find();
   }
 
   async findOne(id: number) {
-    try {
-      const result = await this.userRepository.findOne({ where: { id } });
-      return response(true, result);
-    } catch (error) {
-      return response(false, error);
-    }
+    return this.userRepository.findOne({ where: { id } });
+  }
+
+  async findUserByUsername(username: string) {
+    return this.userRepository.findOne({ where: { username } });
   }
 
   async create(user: User) {
     if (!user.password || !user.username) {
-      return response(false, null, 'miss parameter username or password');
+      throw new BusinessException('miss parameter username or password');
     }
-    try {
-      const userTmp = await this.userRepository.create(user);
-      const result = await this.userRepository.save(userTmp);
-      return response(true, result);
-    } catch (error) {
-      return response(false, error);
-    }
+    const userTmp = await this.userRepository.create(user);
+    return this.userRepository.save(userTmp);
   }
 
   async delete(id: number) {

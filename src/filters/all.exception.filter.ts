@@ -4,10 +4,12 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
-  LoggerService
+  LoggerService,
+  InternalServerErrorException
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import * as requestIp from 'request-ip';
+import { BusinessException } from './business.exception.filter';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -25,15 +27,25 @@ export class AllExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
+    // const responseBody = {
+    //   resuestMessage: {
+    //     headers: request.headers,
+    //     query: request.query,
+    //     body: request.body,
+    //     params: request.params,
+    //   },
+    //   timestamp: new Date().toISOString(),
+    //   ip: requestIp.getClientIp(request),
+    //   exception: exception['name'],
+    //   error: exception['response'] || 'Internal Server Error',
+    //   data: null
+    // };
+
     const responseBody = {
-      headers: request.headers,
-      query: request.query,
-      body: request.body,
-      params: request.params,
+      code: httpStatus,
       timestamp: new Date().toISOString(),
-      ip: requestIp.getClientIp(request),
-      exception: exception['name'],
-      error: exception['response'] || 'Internal Server Error'
+      path: request.url,
+      error: new InternalServerErrorException().getResponse()
     };
 
     this.logger.error('[-- Nest --]', responseBody);

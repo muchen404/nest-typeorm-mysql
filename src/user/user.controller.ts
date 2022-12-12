@@ -1,10 +1,11 @@
+import { ErrorCodeEnum } from '@/enum/error-code.enum';
+import { BusinessException } from '@/filters/business.exception.filter';
 import {
   Body,
   Controller,
   Delete,
   Get,
   Inject,
-  Logger,
   LoggerService,
   Param,
   Post,
@@ -16,7 +17,10 @@ import { ConfigEnum } from '../enum/config.enum';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
-@Controller('user')
+@Controller({
+  path: 'user',
+  version: '1'
+})
 export class UserController {
   constructor(
     private configService: ConfigService,
@@ -38,7 +42,6 @@ export class UserController {
 
   @Get()
   getUsers() {
-    this.logger.log('你好');
     return this.userService.find();
   }
 
@@ -59,7 +62,16 @@ export class UserController {
   }
 
   @Post()
-  createUser(@Body() user: User) {
+  async createUser(@Body() user: User) {
+    // 查询用户ID是否存在
+    const findUser = await this.userService.findUserByUsername(user.username);
+    if (findUser?.id) {
+      throw new BusinessException({
+        code: ErrorCodeEnum.UERRNAME_ALREADY_EXIST,
+        message: 'username already exist'
+      });
+    }
+
     return this.userService.create(user);
   }
 
